@@ -7,6 +7,12 @@
   "workspaceFolder": "/workspace/frontend",
   "shutdownAction": "none",
 
+  // Environment variables
+  "remoteEnv": { 
+    // Needed to hot reload of create-react-app in WSL
+    "CHOKIDAR_USEPOLLING": "true" 
+  },
+
   // Set *default* container specific settings.json values on container create.
   "settings": {
     "terminal.integrated.shell.linux": "/bin/bash",
