@@ -1,0 +1,80 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type CategoryNode implements Node {
+  id: ID!
+  name: String!
+  ingredients(before: String, after: String, first: Int, last: Int, name: String, name_Icontains: String, name_Istartswith: String, notes: String, notes_Icontains: String, category: ID, category_Name: String): IngredientNodeConnection!
+}
+
+type CategoryNodeConnection {
+  pageInfo: PageInfo!
+  edges: [CategoryNodeEdge]!
+}
+
+type CategoryNodeEdge {
+  node: CategoryNode
+  cursor: String!
+}
+
+scalar GenericScalar
+
+type IngredientNode implements Node {
+  id: ID!
+  name: String!
+  notes: String!
+  category: CategoryNode!
+}
+
+type IngredientNodeConnection {
+  pageInfo: PageInfo!
+  edges: [IngredientNodeEdge]!
+}
+
+type IngredientNodeEdge {
+  node: IngredientNode
+  cursor: String!
+}
+
+type Mutation {
+  tokenAuth(username: String!, password: String!): ObtainJSONWebToken
+  verifyToken(token: String): Verify
+  refreshToken(token: String): Refresh
+}
+
+interface Node {
+  id: ID!
+}
+
+type ObtainJSONWebToken {
+  payload: GenericScalar!
+  refreshExpiresIn: Int!
+  token: String!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Query {
+  hello: String
+  category(id: ID!): CategoryNode
+  allCategories(before: String, after: String, first: Int, last: Int, name: String, ingredients: [ID]): CategoryNodeConnection
+  ingredient(id: ID!): IngredientNode
+  allIngredients(before: String, after: String, first: Int, last: Int, name: String, name_Icontains: String, name_Istartswith: String, notes: String, notes_Icontains: String, category: ID, category_Name: String): IngredientNodeConnection
+}
+
+type Refresh {
+  payload: GenericScalar!
+  refreshExpiresIn: Int!
+  token: String!
+}
+
+type Verify {
+  payload: GenericScalar!
+}
