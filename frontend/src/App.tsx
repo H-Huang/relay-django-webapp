@@ -2,9 +2,11 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-function test() {
+import graphql from 'babel-plugin-relay/macro';
+import {QueryRenderer} from 'react-relay';
+import environment from './RelayEnvironment';
 
-}
+import { AppQuery } from "./__generated__/AppQuery.graphql"
 
 function App() {
   return (
@@ -23,6 +25,36 @@ function App() {
           Learn React
         </a>
       </header>
+      <QueryRenderer<AppQuery>
+        environment={environment}
+        query={graphql`
+          query AppQuery {
+            allIngredients {
+              edges {
+                node {
+                  id
+                  name
+                }
+              }
+            }
+          }
+        `}
+        variables={{}}
+        render={({error, props}) => {
+          if (error) {
+            return <div>Error!</div>;
+          }
+          if (!props) {
+            return <div>Loading...</div>;
+          }
+          console.log(props.allIngredients);
+          // const ingredients: any = props?.allIngredients;
+          return(props.allIngredients?.edges.map((ingredient) => {
+            return <h1 key={ingredient?.node?.id}>{ingredient?.node?.name}</h1>
+          }))
+          // return <div>User ID: {props.viewer.id}</div>;
+        }}
+      />
     </div>
   );
 }

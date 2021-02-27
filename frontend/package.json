@@ -12,6 +12,7 @@
     "@types/react-dom": "^17.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-relay": "^10.1.3",
     "react-scripts": "4.0.3",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"
@@ -22,7 +23,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "relay": "relay-compiler --language typescript --src ./src --schema ../backend/schema.graphql --extensions tsx"
   },
   "eslintConfig": {
     "extends": [
@@ -48,6 +50,21 @@
     "@storybook/addon-links": "^6.1.20",
     "@storybook/node-logger": "^6.1.20",
     "@storybook/preset-create-react-app": "^3.1.6",
-    "@storybook/react": "^6.1.20"
+    "@storybook/react": "^6.1.20",
+    "@types/react-relay": "^7.0.17",
+    "@types/relay-runtime": "^10.1.8",
+    "babel-plugin-relay": "^10.1.3",
+    "graphql": "^15.5.0",
+    "relay-compiler": "^10.1.3",
+    "relay-compiler-language-typescript": "^13.0.6",
+    "relay-config": "^10.1.3"
+  },
+  "babel": {
+    "plugins": [
+      "relay"
+    ],
+    "presets": [
+      "react-app"
+    ]
   }
 }
