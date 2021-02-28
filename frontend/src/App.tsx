@@ -1,12 +1,14 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
 
-import graphql from 'babel-plugin-relay/macro';
-import {QueryRenderer} from 'react-relay';
-import environment from './RelayEnvironment';
+import graphql from "babel-plugin-relay/macro";
+import { QueryRenderer } from "react-relay";
+import environment from "./RelayEnvironment";
 
-import { AppQuery } from "./__generated__/AppQuery.graphql"
+import Button from "@material-ui/core/Button";
+
+import { AppQuery } from "./__generated__/AppQuery.graphql";
 
 function App() {
   return (
@@ -40,7 +42,7 @@ function App() {
           }
         `}
         variables={{}}
-        render={({error, props}) => {
+        render={({ error, props }) => {
           if (error) {
             return <div>Error!</div>;
           }
@@ -49,9 +51,16 @@ function App() {
           }
           console.log(props.allIngredients);
           // const ingredients: any = props?.allIngredients;
-          return(props.allIngredients?.edges.map((ingredient) => {
-            return <h1 key={ingredient?.node?.id}>{ingredient?.node?.name}</h1>
-          }))
+          return props.allIngredients?.edges.map((ingredient) => {
+            return (
+              <div>
+                <h1 key={ingredient?.node?.id}>{ingredient?.node?.name}</h1>
+                <Button variant="contained" color="primary">
+                  Hello World
+                </Button>
+              </div>
+            );
+          });
           // return <div>User ID: {props.viewer.id}</div>;
         }}
       />

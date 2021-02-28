@@ -55,10 +55,28 @@ class Query(graphene.ObjectType):
     all_ingredients = DjangoFilterConnectionField(IngredientNode)
 
 
+class IntroduceShip(relay.ClientIDMutation):
+
+    class Input:
+        ship_name = graphene.String(required=True)
+        faction_id = graphene.String(required=True)
+
+    ship = graphene.Field(Ship)
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
+        ship_name = input.ship_name
+        faction_id = input.faction_id
+        ship = create_ship(ship_name, faction_id)
+        faction = get_faction(faction_id)
+        return IntroduceShip(ship=ship, faction=faction)
+
+
 class Mutation(graphene.ObjectType):
-    token_auth = graphql_jwt.ObtainJSONWebToken.Field()
-    verify_token = graphql_jwt.Verify.Field()
-    refresh_token = graphql_jwt.Refresh.Field()
+    token_auth = graphql_jwt.relay.ObtainJSONWebToken.Field()
+    verify_token = graphql_jwt.relay.Verify.Field()
+    refresh_token = graphql_jwt.relay.Refresh.Field()
+    create_ship = IntroduceShip.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
