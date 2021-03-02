@@ -2,17 +2,21 @@ import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 
+import { RouteComponentProps, withRouter } from "react-router";
+
 import graphql from "babel-plugin-relay/macro";
 import { QueryRenderer } from "react-relay";
 import environment from "./RelayEnvironment";
 
 import Button from "@material-ui/core/Button";
+import Router from "./Router";
 
 import { AppQuery } from "./__generated__/AppQuery.graphql";
 
 function App() {
   return (
     <div className="App">
+      <Router />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
