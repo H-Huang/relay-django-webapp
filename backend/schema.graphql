@@ -19,6 +19,20 @@ type CategoryNodeEdge {
   cursor: String!
 }
 
+input CreateUserInput {
+  username: String!
+  password: String!
+  email: String!
+  clientMutationId: String
+}
+
+type CreateUserPayload {
+  user: UserType
+  clientMutationId: String
+}
+
+scalar DateTime
+
 scalar GenericScalar
 
 type IngredientNode implements Node {
@@ -38,19 +52,39 @@ type IngredientNodeEdge {
   cursor: String!
 }
 
+input IntroduceShipInput {
+  shipName: String!
+  factionId: String!
+  clientMutationId: String
+}
+
+type IntroduceShipPayload {
+  ship: Ship
+  clientMutationId: String
+}
+
 type Mutation {
-  tokenAuth(username: String!, password: String!): ObtainJSONWebToken
-  verifyToken(token: String): Verify
-  refreshToken(token: String): Refresh
+  createUser(input: CreateUserInput!): CreateUserPayload
+  tokenAuth(input: ObtainJSONWebTokenInput!): ObtainJSONWebTokenPayload
+  verifyToken(input: VerifyInput!): VerifyPayload
+  refreshToken(input: RefreshInput!): RefreshPayload
+  createShip(input: IntroduceShipInput!): IntroduceShipPayload
 }
 
 interface Node {
   id: ID!
 }
 
-type ObtainJSONWebToken {
+input ObtainJSONWebTokenInput {
+  clientMutationId: String
+  username: String!
+  password: String!
+}
+
+type ObtainJSONWebTokenPayload {
   payload: GenericScalar!
   refreshExpiresIn: Int!
+  clientMutationId: String
   token: String!
 }
 
@@ -69,12 +103,43 @@ type Query {
   allIngredients(before: String, after: String, first: Int, last: Int, name: String, name_Icontains: String, name_Istartswith: String, notes: String, notes_Icontains: String, category: ID, category_Name: String): IngredientNodeConnection
 }
 
-type Refresh {
+input RefreshInput {
+  token: String
+  clientMutationId: String
+}
+
+type RefreshPayload {
   payload: GenericScalar!
   refreshExpiresIn: Int!
+  clientMutationId: String
   token: String!
 }
 
-type Verify {
+type Ship implements Node {
+  id: ID!
+  name: String
+}
+
+type UserType {
+  id: ID!
+  password: String!
+  lastLogin: DateTime
+  isSuperuser: Boolean!
+  username: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+  isStaff: Boolean!
+  isActive: Boolean!
+  dateJoined: DateTime!
+}
+
+input VerifyInput {
+  token: String
+  clientMutationId: String
+}
+
+type VerifyPayload {
   payload: GenericScalar!
+  clientMutationId: String
 }

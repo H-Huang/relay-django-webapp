@@ -1,3 +1,5 @@
+from django.contrib.auth import get_user_model
+
 import graphene
 from graphene import relay, ObjectType
 from graphene_django import DjangoObjectType
@@ -9,6 +11,11 @@ import graphql_jwt
 from graphql import GraphQLError
 from graphql_jwt.decorators import (login_required, user_passes_test)
 from django.conf import settings
+
+
+class UserType(DjangoObjectType):
+    class Meta:
+        model = get_user_model()
 
 
 class Ship(graphene.ObjectType):
@@ -72,7 +79,29 @@ class IntroduceShip(relay.ClientIDMutation):
         return IntroduceShip(ship=ship, faction=faction)
 
 
+class CreateUser(relay.ClientIDMutation):
+    user = graphene.Field(UserType)
+
+    class Input:
+        username = graphene.String(required=True)
+        password = graphene.String(required=True)
+        email = graphene.String(required=True)
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
+        print(input)
+        user = get_user_model()(
+            username=input["username"],
+            email=input["email"],
+        )
+        user.set_password(input["password"])
+        user.save()
+
+        return CreateUser(user=user)
+
+
 class Mutation(graphene.ObjectType):
+    create_user = CreateUser.Field()
     token_auth = graphql_jwt.relay.ObtainJSONWebToken.Field()
     verify_token = graphql_jwt.relay.Verify.Field()
     refresh_token = graphql_jwt.relay.Refresh.Field()
