@@ -16,6 +16,8 @@ from django.conf import settings
 class UserType(DjangoObjectType):
     class Meta:
         model = get_user_model()
+        filter_fields = ['username']
+        interfaces = (relay.Node, )
 
 
 class Ship(graphene.ObjectType):
@@ -60,6 +62,7 @@ class Query(graphene.ObjectType):
 
     ingredient = relay.Node.Field(IngredientNode)
     all_ingredients = DjangoFilterConnectionField(IngredientNode)
+    all_users = DjangoFilterConnectionField(UserType)
 
 
 class IntroduceShip(relay.ClientIDMutation):
@@ -83,7 +86,6 @@ class CreateUser(relay.ClientIDMutation):
     user = graphene.Field(UserType)
 
     class Input:
-        username = graphene.String(required=True)
         password = graphene.String(required=True)
         email = graphene.String(required=True)
 
@@ -91,7 +93,7 @@ class CreateUser(relay.ClientIDMutation):
     def mutate_and_get_payload(cls, root, info, **input):
         print(input)
         user = get_user_model()(
-            username=input["username"],
+            username=input["email"],
             email=input["email"],
         )
         user.set_password(input["password"])

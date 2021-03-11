@@ -18,11 +18,16 @@
     "terminal.integrated.shell.linux": "/bin/bash",
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "remote.autoForwardPorts": false
+    "remote.autoForwardPorts": false,
+    "vscode-graphql.showExecCodelens": false
   },
 
   // Add the IDs of extensions you want installed when the container is created.
-  "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"],
+  "extensions": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "graphql.vscode-graphql"
+  ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [3000],

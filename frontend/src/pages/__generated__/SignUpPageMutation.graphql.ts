@@ -4,7 +4,6 @@
 
 import { ConcreteRequest } from "relay-runtime";
 export type CreateUserInput = {
-    username: string;
     password: string;
     email: string;
     clientMutationId?: string | null;

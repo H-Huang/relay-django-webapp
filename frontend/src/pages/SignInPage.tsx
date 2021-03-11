@@ -13,9 +13,52 @@ import {
   Container,
 } from "@material-ui/core";
 // import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import { commitMutation, graphql } from "react-relay";
+import graphql from "babel-plugin-relay/macro";
+import { commitMutation, commitLocalUpdate, Environment } from "react-relay";
+import environment from "../RelayEnvironment";
+
+import type {
+  ObtainJSONWebTokenInput,
+  SignInPageMutationVariables,
+  SignInPageMutation,
+} from "./__generated__/SignInPageMutation.graphql";
 
 import useStyles from "./SignInPage.css";
+import { useHistory } from "react-router-dom";
+import { AUTH_TOKEN } from "../constants";
+
+const mutation = graphql`
+  mutation SignInPageMutation($input: ObtainJSONWebTokenInput!) {
+    tokenAuth(input: $input) {
+      payload
+      refreshExpiresIn
+      clientMutationId
+      token
+    }
+  }
+`;
+
+let tempID = 0;
+
+function createToken(token: String) {
+  commitLocalUpdate(environment, (store) => {
+    console.log(store.getRoot());
+    const user = store.getRoot().getLinkedRecord("viewer");
+    const userNoteRecords = user?.getLinkedRecords("notes");
+
+    // Create a unique ID.
+    const dataID = `client:Note:${tempID++}`;
+
+    // Remove the note from the list of user notes.
+    const newUserNoteRecords = userNoteRecords?.filter(
+      (x) => x.getDataID() !== dataID
+    );
+    // Delete the note from the store.
+    store.delete(dataID);
+    // Set the new list of notes.
+    user?.setLinkedRecords(newUserNoteRecords, "notes");
+  });
+}
 
 function Copyright() {
   return (
@@ -31,7 +74,44 @@ function Copyright() {
 }
 
 export default function SignIn() {
+  const history = useHistory();
+
+  const [state, setState] = React.useState<ObtainJSONWebTokenInput>({
+    username: "",
+    password: "",
+  });
   const classes = useStyles();
+
+  function signIn(
+    environment: Environment,
+    variables: SignInPageMutationVariables
+  ) {
+    console.log(variables);
+    commitMutation<SignInPageMutation>(environment, {
+      mutation,
+      variables,
+      onCompleted: (response, errors) => {
+        console.log("Response received from server.");
+        console.log(response);
+        console.log(errors);
+        if (response?.tokenAuth) {
+          localStorage.setItem(AUTH_TOKEN, response.tokenAuth.token);
+          history.push("/main");
+        }
+      },
+      onError: (err) => console.error(err),
+    });
+  }
+
+  const handleChange = (
+    evt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const value = evt.target.value;
+    setState({
+      ...state,
+      [evt.target.name]: value,
+    });
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -49,9 +129,10 @@ export default function SignIn() {
             fullWidth
             id="email"
             label="Email Address"
-            name="email"
+            name="username"
             autoComplete="email"
             autoFocus
+            onChange={handleChange}
           />
           <TextField
             variant="outlined"
@@ -63,6 +144,7 @@ export default function SignIn() {
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange={handleChange}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
@@ -74,6 +156,10 @@ export default function SignIn() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={(e) => {
+              e.preventDefault();
+              signIn(environment, { input: state });
+            }}
           >
             Sign In
           </Button>

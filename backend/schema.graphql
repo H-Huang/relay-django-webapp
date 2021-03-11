@@ -20,7 +20,6 @@ type CategoryNodeEdge {
 }
 
 input CreateUserInput {
-  username: String!
   password: String!
   email: String!
   clientMutationId: String
@@ -101,6 +100,7 @@ type Query {
   allCategories(before: String, after: String, first: Int, last: Int, name: String, ingredients: [ID]): CategoryNodeConnection
   ingredient(id: ID!): IngredientNode
   allIngredients(before: String, after: String, first: Int, last: Int, name: String, name_Icontains: String, name_Istartswith: String, notes: String, notes_Icontains: String, category: ID, category_Name: String): IngredientNodeConnection
+  allUsers(before: String, after: String, first: Int, last: Int, username: String): UserTypeConnection
 }
 
 input RefreshInput {
@@ -120,7 +120,7 @@ type Ship implements Node {
   name: String
 }
 
-type UserType {
+type UserType implements Node {
   id: ID!
   password: String!
   lastLogin: DateTime
@@ -132,6 +132,16 @@ type UserType {
   isStaff: Boolean!
   isActive: Boolean!
   dateJoined: DateTime!
+}
+
+type UserTypeConnection {
+  pageInfo: PageInfo!
+  edges: [UserTypeEdge]!
+}
+
+type UserTypeEdge {
+  node: UserType
+  cursor: String!
 }
 
 input VerifyInput {

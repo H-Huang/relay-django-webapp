@@ -43,6 +43,19 @@ function App() {
                 }
               }
             }
+            allUsers {
+              edges {
+                node {
+                  username
+                  authToken
+                  notes {
+                    id
+                    title
+                    body
+                  }
+                }
+              }
+            }
           }
         `}
         variables={{}}
@@ -54,6 +67,7 @@ function App() {
             return <div>Loading...</div>;
           }
           console.log(props.allIngredients);
+          console.log(props.allUsers);
           // const ingredients: any = props?.allIngredients;
           return props.allIngredients?.edges.map((ingredient) => {
             return (
