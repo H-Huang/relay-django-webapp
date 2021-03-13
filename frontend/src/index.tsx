@@ -3,10 +3,20 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import environment from "./RelayEnvironment";
+import ErrorBoundary from "./components/ErrorBoundary";
+
+const { RelayEnvironmentProvider } = require("react-relay");
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <RelayEnvironmentProvider environment={environment}>
+      <ErrorBoundary>
+        <React.Suspense fallback={null}>
+          <App />
+        </React.Suspense>
+      </ErrorBoundary>
+    </RelayEnvironmentProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

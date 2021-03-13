@@ -5,83 +5,68 @@ import "./App.css";
 import { RouteComponentProps, withRouter } from "react-router";
 
 import graphql from "babel-plugin-relay/macro";
-import { QueryRenderer } from "react-relay";
-import environment from "./RelayEnvironment";
-
 import Button from "@material-ui/core/Button";
 import Router from "./Router";
 
-import { AppQuery } from "./__generated__/AppQuery.graphql";
+import environment from "./RelayEnvironment";
+// import type { PreloadedQuery } from "react-relay";
+import type {
+  AppQuery,
+  AppQueryResponse,
+} from "./__generated__/AppQuery.graphql";
+const { loadQuery, usePreloadedQuery } = require("react-relay");
+
+const query = graphql`
+  query AppQuery {
+    allIngredients {
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+    allUsers {
+      edges {
+        node {
+          username
+          authToken
+          notes {
+            id
+            title
+            body
+          }
+        }
+      }
+    }
+  }
+`;
+
+const appQueryReference = loadQuery(environment, query);
 
 function App() {
+  const data: AppQueryResponse = usePreloadedQuery(query, appQueryReference);
+  console.log(data);
+
+  const ingredients = data.allIngredients?.edges.map((ingredient) => {
+    return (
+      <div key={ingredient?.node?.id}>
+        <h1>{ingredient?.node?.name}</h1>
+        <Button variant="contained" color="primary">
+          Hello World
+        </Button>
+      </div>
+    );
+  });
+  console.log(ingredients);
+
   return (
     <div className="App">
       <Router />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
       </header>
-      <QueryRenderer<AppQuery>
-        environment={environment}
-        query={graphql`
-          query AppQuery {
-            allIngredients {
-              edges {
-                node {
-                  id
-                  name
-                }
-              }
-            }
-            allUsers {
-              edges {
-                node {
-                  username
-                  authToken
-                  notes {
-                    id
-                    title
-                    body
-                  }
-                }
-              }
-            }
-          }
-        `}
-        variables={{}}
-        render={({ error, props }) => {
-          if (error) {
-            return <div>Error!</div>;
-          }
-          if (!props) {
-            return <div>Loading...</div>;
-          }
-          console.log(props.allIngredients);
-          console.log(props.allUsers);
-          // const ingredients: any = props?.allIngredients;
-          return props.allIngredients?.edges.map((ingredient) => {
-            return (
-              <div>
-                <h1 key={ingredient?.node?.id}>{ingredient?.node?.name}</h1>
-                <Button variant="contained" color="primary">
-                  Hello World
-                </Button>
-              </div>
-            );
-          });
-          // return <div>User ID: {props.viewer.id}</div>;
-        }}
-      />
+      {ingredients}
     </div>
   );
 }
