@@ -4,17 +4,37 @@ import "./App.css";
 
 import { RouteComponentProps, withRouter } from "react-router";
 
-import graphql from "babel-plugin-relay/macro";
 import Button from "@material-ui/core/Button";
 import Router from "./Router";
 
 import environment from "./RelayEnvironment";
 // import type { PreloadedQuery } from "react-relay";
 import type {
-  AppQuery,
+  AppQuery as AppQueryType,
   AppQueryResponse,
 } from "./__generated__/AppQuery.graphql";
-const { loadQuery, usePreloadedQuery } = require("react-relay");
+import { AUTH_TOKEN } from "./constants";
+import { v4 as uuidv4 } from "uuid";
+import graphql from "babel-plugin-relay/macro";
+import { RecordSourceProxy } from "relay-runtime";
+const {
+  loadQuery,
+  usePreloadedQuery,
+  commitLocalUpdate,
+} = require("react-relay");
+
+// initial local state
+commitLocalUpdate(environment, (store: RecordSourceProxy) => {
+  console.log(store);
+  const clientStore = store.getRoot().getLinkedRecord("clientStore");
+
+  const token = localStorage.getItem(AUTH_TOKEN);
+  const newClientStore = store.create(uuidv4(), "clientStore");
+  newClientStore.setValue(token, "authToken");
+  console.log(newClientStore);
+  const root = store.getRoot();
+  root.setLinkedRecord(newClientStore, "clientStore");
+});
 
 const query = graphql`
   query AppQuery {
@@ -29,16 +49,12 @@ const query = graphql`
     allUsers {
       edges {
         node {
+          id
           username
-          authToken
-          notes {
-            id
-            title
-            body
-          }
         }
       }
     }
+    ...RouterFragment_query
   }
 `;
 
@@ -62,7 +78,7 @@ function App() {
 
   return (
     <div className="App">
-      <Router />
+      <Router clientStore={data} />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
       </header>

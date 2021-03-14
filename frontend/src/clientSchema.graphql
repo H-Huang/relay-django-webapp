@@ -1,11 +1,9 @@
 # this is for local state management (https://relay.dev/docs/en/local-state-management)
-type Note {
-  id: ID!
-  title: String
+type ClientStore {
+  authToken: String
   body: String
 }
 
-extend type UserType {
-  authToken: String
-  notes: [Note]
+extend type Query {
+  clientStore: ClientStore
 }

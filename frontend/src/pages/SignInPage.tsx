@@ -15,6 +15,7 @@ import {
 // import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import graphql from "babel-plugin-relay/macro";
 import { commitMutation, commitLocalUpdate, Environment } from "react-relay";
+
 import environment from "../RelayEnvironment";
 
 import type {
@@ -26,6 +27,7 @@ import type {
 import useStyles from "./SignInPage.css";
 import { useHistory } from "react-router-dom";
 import { AUTH_TOKEN } from "../constants";
+const { ConnectionHandler } = require("relay-runtime");
 
 const mutation = graphql`
   mutation SignInPageMutation($input: ObtainJSONWebTokenInput!) {
@@ -38,25 +40,12 @@ const mutation = graphql`
   }
 `;
 
-let tempID = 0;
-
-function createToken(token: String) {
-  commitLocalUpdate(environment, (store) => {
-    console.log(store.getRoot());
-    const user = store.getRoot().getLinkedRecord("viewer");
-    const userNoteRecords = user?.getLinkedRecords("notes");
-
-    // Create a unique ID.
-    const dataID = `client:Note:${tempID++}`;
-
-    // Remove the note from the list of user notes.
-    const newUserNoteRecords = userNoteRecords?.filter(
-      (x) => x.getDataID() !== dataID
-    );
-    // Delete the note from the store.
-    store.delete(dataID);
-    // Set the new list of notes.
-    user?.setLinkedRecords(newUserNoteRecords, "notes");
+function commitTokenCreateLocally(environment: Environment, userId: string) {
+  return commitLocalUpdate(environment, (store) => {
+    const root = store.getRoot();
+    console.log(root);
+    const user = store.get(userId);
+    console.log(user);
   });
 }
 
@@ -73,6 +62,35 @@ function Copyright() {
   );
 }
 
+export function signIn(
+  environment: Environment,
+  variables: SignInPageMutationVariables
+) {
+  console.log(variables);
+  commitMutation<SignInPageMutation>(environment, {
+    mutation,
+    variables,
+    onCompleted: (response, errors) => {
+      // console.log("Response received from server.");
+      // console.log(response);
+      // console.log(errors);
+      if (response?.tokenAuth) {
+        localStorage.setItem(AUTH_TOKEN, response.tokenAuth.token);
+      }
+    },
+    onError: (err) => console.error(err),
+    updater: (store) => {
+      const token = store.getRootField("tokenAuth").getValue("token");
+
+      const newClientStore = store.create(token, "clientStore");
+      newClientStore.setValue(token, "authToken");
+      console.log(newClientStore);
+      const root = store.getRoot();
+      root.setLinkedRecord(newClientStore, "clientStore");
+    },
+  });
+}
+
 export default function SignIn() {
   const history = useHistory();
 
@@ -81,27 +99,6 @@ export default function SignIn() {
     password: "",
   });
   const classes = useStyles();
-
-  function signIn(
-    environment: Environment,
-    variables: SignInPageMutationVariables
-  ) {
-    console.log(variables);
-    commitMutation<SignInPageMutation>(environment, {
-      mutation,
-      variables,
-      onCompleted: (response, errors) => {
-        console.log("Response received from server.");
-        console.log(response);
-        console.log(errors);
-        if (response?.tokenAuth) {
-          localStorage.setItem(AUTH_TOKEN, response.tokenAuth.token);
-          history.push("/main");
-        }
-      },
-      onError: (err) => console.error(err),
-    });
-  }
 
   const handleChange = (
     evt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -159,6 +156,8 @@ export default function SignIn() {
             onClick={(e) => {
               e.preventDefault();
               signIn(environment, { input: state });
+              // history.push("/main");
+              // commitTokenCreateLocally(environment, "VXNlclR5cGU6MTM=");
             }}
           >
             Sign In

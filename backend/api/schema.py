@@ -20,18 +20,6 @@ class UserType(DjangoObjectType):
         interfaces = (relay.Node, )
 
 
-class Ship(graphene.ObjectType):
-    '''A ship in the Star Wars saga'''
-    class Meta:
-        interfaces = (relay.Node, )
-
-    name = graphene.String(description='The name of the ship.')
-
-    @classmethod
-    def get_node(cls, info, id):
-        return get_ship(id)
-
-
 class CategoryNode(DjangoObjectType):
     class Meta:
         model = Category
@@ -65,21 +53,19 @@ class Query(graphene.ObjectType):
     all_users = DjangoFilterConnectionField(UserType)
 
 
-class IntroduceShip(relay.ClientIDMutation):
+class GetUser(relay.ClientIDMutation):
+    user = graphene.Field(UserType)
 
     class Input:
-        ship_name = graphene.String(required=True)
-        faction_id = graphene.String(required=True)
-
-    ship = graphene.Field(Ship)
+        password = graphene.String(required=True)
+        username = graphene.String(required=True)
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
-        ship_name = input.ship_name
-        faction_id = input.faction_id
-        ship = create_ship(ship_name, faction_id)
-        faction = get_faction(faction_id)
-        return IntroduceShip(ship=ship, faction=faction)
+        User = get_user_model()
+        user = User.objects.get(username=input["username"])
+
+        return SignIn(user=user)
 
 
 class CreateUser(relay.ClientIDMutation):
@@ -105,9 +91,9 @@ class CreateUser(relay.ClientIDMutation):
 class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
     token_auth = graphql_jwt.relay.ObtainJSONWebToken.Field()
+    # sign_in = SignIn.Field()
     verify_token = graphql_jwt.relay.Verify.Field()
     refresh_token = graphql_jwt.relay.Refresh.Field()
-    create_ship = IntroduceShip.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

@@ -14,13 +14,16 @@ import {
 } from "@material-ui/core";
 // import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import graphql from "babel-plugin-relay/macro";
-import { commitMutation } from "react-relay";
+import { commitMutation, Environment } from "react-relay";
 import environment from "../RelayEnvironment";
+import { signIn } from "./SignInPage";
+import { useHistory } from "react-router-dom";
 
 import {
   CreateUserInput,
   SignUpPageMutationVariables,
 } from "./__generated__/SignUpPageMutation.graphql";
+import type { ObtainJSONWebTokenInput } from "./__generated__/SignInPageMutation.graphql";
 
 import useStyles from "./SignInPage.css";
 
@@ -34,7 +37,10 @@ const mutation = graphql`
   }
 `;
 
-function signUp(environment: any, variables: SignUpPageMutationVariables) {
+function signUp(
+  environment: Environment,
+  variables: SignUpPageMutationVariables
+) {
   console.log(variables);
   commitMutation(environment, {
     mutation,
@@ -62,6 +68,8 @@ function Copyright() {
 }
 
 export default function SignUp() {
+  const history = useHistory();
+
   const classes = useStyles();
   const [state, setState] = React.useState<CreateUserInput>({
     email: "",
@@ -129,6 +137,12 @@ export default function SignUp() {
             onClick={(e) => {
               e.preventDefault();
               signUp(environment, { input: state });
+              const loginInfo: ObtainJSONWebTokenInput = {
+                username: state.email,
+                password: state.password,
+              };
+              signIn(environment, { input: loginInfo });
+              history.push("/main");
             }}
           >
             Sign Up
