@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export type AppBarProps = {
   loggedIn: Boolean;
+  signOutMethod: Function;
 };
 
 export default function ButtonAppBar(props: AppBarProps) {
@@ -54,7 +55,15 @@ export default function ButtonAppBar(props: AppBarProps) {
           </Typography>
           {props.loggedIn ? (
             <NavLink to="/SignOut" activeClassName={classes.isActive}>
-              <Button color="inherit">Sign out</Button>
+              <Button
+                color="inherit"
+                onClick={(e) => {
+                  e.preventDefault();
+                  props.signOutMethod();
+                }}
+              >
+                Sign out
+              </Button>
             </NavLink>
           ) : (
             <NavLink to="/SignIn" activeClassName={classes.isActive}>

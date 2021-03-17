@@ -1,4 +1,4 @@
-// Router.tsx
+// LayoutPage.tsx
 import React, { useState } from "react";
 import { BrowserRouter, Route, Link } from "react-router-dom";
 import { RouteComponentProps, withRouter } from "react-router";
@@ -6,15 +6,15 @@ import { RouteComponentProps, withRouter } from "react-router";
 import SignIn from "./pages/SignInPage";
 import SignUp from "./pages/SignUpPage";
 
-import { AUTH_TOKEN } from "./constants";
+import { AUTH_TOKEN } from "../constants";
 import { useHistory } from "react-router-dom";
 
-import environment from "./RelayEnvironment";
+import environment from "../RelayEnvironment";
 import graphql from "babel-plugin-relay/macro";
-import type { RouterFragment_query$key } from "./__generated__/RouterFragment_query.graphql";
+import type { RouterFragment_query$key } from "../__generated__/RouterFragment_query.graphql";
 import { RecordSourceProxy } from "relay-runtime";
 
-import AppBar from "./components/AppBar";
+import AppBar from "../components/AppBar";
 
 const {
   loadQuery,
@@ -43,38 +43,22 @@ const routerFragment = graphql`
 
 type Props = {
   clientStore: RouterFragment_query$key;
+  children?: JSX.Element;
 };
 
-export default function Router(props: Props) {
+const LayoutPage = (props: Props) => {
   const data = useFragment(routerFragment, props.clientStore);
-  console.log(props);
-  console.log("Router", data);
-  const history = useHistory();
   return (
-    <BrowserRouter>
+    <React.Fragment>
       <AppBar
         loggedIn={data.clientStore.authToken !== null}
         signOutMethod={signOut}
       />
-      {data.clientStore.authToken === null ? (
-        <div>
-          <Link to="/SignIn">Sign In</Link>
-          <Link to="/SignUp">Sign Up</Link>
-        </div>
-      ) : (
-        <Link
-          to="/SignOut"
-          onClick={(e) => {
-            e.preventDefault();
-            signOut();
-            // history.push("/main");
-          }}
-        >
-          Sign Out
-        </Link>
-      )}
-      <Route exact path="/SignIn" component={SignIn} />
-      <Route exact path="/SignUp" component={SignUp} />
-    </BrowserRouter>
+      <div className="navigationWrapper">
+        <main>{props.children}</main>
+      </div>
+    </React.Fragment>
   );
-}
+};
+
+export default LayoutPage;
