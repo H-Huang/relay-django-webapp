@@ -14,6 +14,8 @@ import graphql from "babel-plugin-relay/macro";
 import type { RouterFragment_query$key } from "./__generated__/RouterFragment_query.graphql";
 import { RecordSourceProxy } from "relay-runtime";
 
+import AppBar from "./components/AppBar";
+
 const {
   loadQuery,
   usePreloadedQuery,
@@ -50,6 +52,7 @@ export default function Router(props: Props) {
   const history = useHistory();
   return (
     <BrowserRouter>
+      <AppBar loggedIn={data.clientStore.authToken !== null} />
       {data.clientStore.authToken === null ? (
         <div>
           <Link to="/SignIn">Sign In</Link>

@@ -1,4 +1,5 @@
 import { Environment, Network, RecordSource, Store } from "relay-runtime";
+import { AUTH_TOKEN } from "./constants";
 
 async function fetchGraphQL(text: any, variables: any) {
   // Fetch data from GitHub's GraphQL API:
@@ -7,7 +8,7 @@ async function fetchGraphQL(text: any, variables: any) {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      // Authorization: `bearer ${REACT_APP_GITHUB_AUTH_TOKEN}`,
+      Authorization: `bearer ${localStorage.getItem(AUTH_TOKEN)}`,
     },
     body: JSON.stringify({
       query: text,
@@ -23,6 +24,7 @@ async function fetchRelay(params: { name: any; text: any }, variables: any) {
   console.log(
     `fetching query ${params.name} with ${JSON.stringify(variables)}`
   );
+  console.log(localStorage.getItem(AUTH_TOKEN));
   return fetchGraphQL(params.text, variables);
 }
 

@@ -6,7 +6,6 @@ import {
   TextField,
   FormControlLabel,
   Checkbox,
-  Link,
   Grid,
   Box,
   Typography,
@@ -17,6 +16,7 @@ import graphql from "babel-plugin-relay/macro";
 import { commitMutation, commitLocalUpdate, Environment } from "react-relay";
 
 import environment from "../RelayEnvironment";
+import { Link } from "react-router-dom";
 
 import type {
   ObtainJSONWebTokenInput,
@@ -53,7 +53,7 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
+      <Link color="inherit" to="https://material-ui.com/">
         Your Website
       </Link>{" "}
       {new Date().getFullYear()}
@@ -164,14 +164,10 @@ export default function SignIn() {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
+              <p>Forgot password?</p>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
+              <Link to="/SignUp">{"Don't have an account? Sign Up"}</Link>
             </Grid>
           </Grid>
         </form>
