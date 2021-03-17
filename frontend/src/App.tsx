@@ -18,11 +18,13 @@ import { AUTH_TOKEN } from "./constants";
 import { v4 as uuidv4 } from "uuid";
 import graphql from "babel-plugin-relay/macro";
 import { RecordSourceProxy } from "relay-runtime";
-const {
+import {
   loadQuery,
   usePreloadedQuery,
+  useQueryLoader,
   commitLocalUpdate,
-} = require("react-relay");
+} from "react-relay";
+import { useHistory } from "react-router-dom";
 
 // initial local state
 commitLocalUpdate(environment, (store: RecordSourceProxy) => {
@@ -57,11 +59,15 @@ const query = graphql`
   }
 `;
 
-const appQueryReference = loadQuery(environment, query);
+const appQueryReference = loadQuery<AppQueryType>(environment, query, {});
 
 function App() {
-  const data: AppQueryResponse = usePreloadedQuery(query, appQueryReference);
+  const history = useHistory();
+  const data = usePreloadedQuery<AppQueryType>(query, appQueryReference);
   console.log(data);
+  const [mainPageQueryRef, loadMainPageQuery] = useQueryLoader<AppQueryType>(
+    query
+  );
 
   const ingredients = data.allIngredients?.edges.map((ingredient) => {
     return (
@@ -77,7 +83,19 @@ function App() {
 
   return (
     <LayoutPage clientStore={data}>
-      <Route exact path="/" component={MainPage} />
+      <Button
+        onClick={() => {
+          loadMainPageQuery({});
+          history.push("/main");
+        }}
+      >
+        click me to go to main manually
+      </Button>
+      <Route
+        exact
+        path="/main"
+        render={(props) => <MainPage {...props} queryRef={mainPageQueryRef} />}
+      />
       <Route exact path="/SignIn" component={SignInPage} />
       <Route exact path="/SignUp" component={SignUpPage} />
       {ingredients}
