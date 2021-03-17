@@ -1,11 +1,12 @@
 import React from "react";
 import { Route } from "react-router-dom";
 
-import SignIn from "./pages/SignInPage";
-import SignUp from "./pages/SignUpPage";
+import SignInPage from "./pages/SignInPage";
+import SignUpPage from "./pages/SignUpPage";
+import MainPage from "./pages/MainPage";
+import LayoutPage from "./pages/LayoutPage";
 
 import Button from "@material-ui/core/Button";
-import LayoutPage from "./pages/LayoutPage";
 
 import environment from "./RelayEnvironment";
 // import type { PreloadedQuery } from "react-relay";
@@ -25,13 +26,11 @@ const {
 
 // initial local state
 commitLocalUpdate(environment, (store: RecordSourceProxy) => {
-  console.log(store);
-  const clientStore = store.getRoot().getLinkedRecord("clientStore");
-
+  // console.log(store);
+  // const clientStore = store.getRoot().getLinkedRecord("clientStore");
   const token = localStorage.getItem(AUTH_TOKEN);
   const newClientStore = store.create(uuidv4(), "clientStore");
   newClientStore.setValue(token, "authToken");
-  console.log(newClientStore);
   const root = store.getRoot();
   root.setLinkedRecord(newClientStore, "clientStore");
 });
@@ -78,8 +77,9 @@ function App() {
 
   return (
     <LayoutPage clientStore={data}>
-      <Route exact path="/SignIn" component={SignIn} />
-      <Route exact path="/SignUp" component={SignUp} />
+      <Route exact path="/" component={MainPage} />
+      <Route exact path="/SignIn" component={SignInPage} />
+      <Route exact path="/SignUp" component={SignUpPage} />
       {ingredients}
     </LayoutPage>
   );
