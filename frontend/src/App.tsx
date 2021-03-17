@@ -1,11 +1,11 @@
 import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import { Route } from "react-router-dom";
 
-import { RouteComponentProps, withRouter } from "react-router";
+import SignIn from "./pages/SignInPage";
+import SignUp from "./pages/SignUpPage";
 
 import Button from "@material-ui/core/Button";
-import Router from "./Router";
+import LayoutPage from "./pages/LayoutPage";
 
 import environment from "./RelayEnvironment";
 // import type { PreloadedQuery } from "react-relay";
@@ -54,7 +54,7 @@ const query = graphql`
         }
       }
     }
-    ...RouterFragment_query
+    ...LayoutPageFragment_query
   }
 `;
 
@@ -77,13 +77,11 @@ function App() {
   console.log(ingredients);
 
   return (
-    <div className="App">
-      <Router clientStore={data} />
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-      </header>
+    <LayoutPage clientStore={data}>
+      <Route exact path="/SignIn" component={SignIn} />
+      <Route exact path="/SignUp" component={SignUp} />
       {ingredients}
-    </div>
+    </LayoutPage>
   );
 }
 

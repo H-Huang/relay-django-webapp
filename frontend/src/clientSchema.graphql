@@ -1,7 +1,6 @@
 # this is for local state management (https://relay.dev/docs/en/local-state-management)
 type ClientStore {
   authToken: String
-  body: String
 }
 
 extend type Query {

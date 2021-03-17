@@ -22,7 +22,7 @@ export type AppQueryResponse = {
             } | null;
         } | null>;
     } | null;
-    readonly " $fragmentRefs": FragmentRefs<"RouterFragment_query">;
+    readonly " $fragmentRefs": FragmentRefs<"LayoutPageFragment_query">;
 };
 export type AppQuery = {
     readonly response: AppQueryResponse;
@@ -154,7 +154,7 @@ return {
       {
         "args": null,
         "kind": "FragmentSpread",
-        "name": "RouterFragment_query"
+        "name": "LayoutPageFragment_query"
       }
     ],
     "type": "Query",
@@ -203,5 +203,5 @@ return {
   }
 };
 })();
-(node as any).hash = '09652a6587066d653b3a54e84a4b1929';
+(node as any).hash = '32b048de909c16f6628de2dba1fc3bd8';
 export default node;

@@ -3,15 +3,12 @@ import React, { useState } from "react";
 import { BrowserRouter, Route, Link } from "react-router-dom";
 import { RouteComponentProps, withRouter } from "react-router";
 
-import SignIn from "./pages/SignInPage";
-import SignUp from "./pages/SignUpPage";
-
 import { AUTH_TOKEN } from "../constants";
 import { useHistory } from "react-router-dom";
 
 import environment from "../RelayEnvironment";
 import graphql from "babel-plugin-relay/macro";
-import type { RouterFragment_query$key } from "../__generated__/RouterFragment_query.graphql";
+import type { LayoutPageFragment_query$key } from "./__generated__/LayoutPageFragment_query.graphql";
 import { RecordSourceProxy } from "relay-runtime";
 
 import AppBar from "../components/AppBar";
@@ -33,8 +30,8 @@ function signOut() {
   });
 }
 
-const routerFragment = graphql`
-  fragment RouterFragment_query on Query {
+const fragment = graphql`
+  fragment LayoutPageFragment_query on Query {
     clientStore {
       authToken
     }
@@ -42,12 +39,12 @@ const routerFragment = graphql`
 `;
 
 type Props = {
-  clientStore: RouterFragment_query$key;
-  children?: JSX.Element;
+  clientStore: LayoutPageFragment_query$key;
+  children?: React.ReactNode;
 };
 
 const LayoutPage = (props: Props) => {
-  const data = useFragment(routerFragment, props.clientStore);
+  const data = useFragment(fragment, props.clientStore);
   return (
     <React.Fragment>
       <AppBar

@@ -4,16 +4,16 @@
 
 import { ReaderFragment } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
-export type RouterFragment_query = {
+export type LayoutPageFragment_query = {
     readonly clientStore: {
         readonly authToken: string | null;
     } | null;
-    readonly " $refType": "RouterFragment_query";
+    readonly " $refType": "LayoutPageFragment_query";
 };
-export type RouterFragment_query$data = RouterFragment_query;
-export type RouterFragment_query$key = {
-    readonly " $data"?: RouterFragment_query$data;
-    readonly " $fragmentRefs": FragmentRefs<"RouterFragment_query">;
+export type LayoutPageFragment_query$data = LayoutPageFragment_query;
+export type LayoutPageFragment_query$key = {
+    readonly " $data"?: LayoutPageFragment_query$data;
+    readonly " $fragmentRefs": FragmentRefs<"LayoutPageFragment_query">;
 };
 
 
@@ -22,7 +22,7 @@ const node: ReaderFragment = {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "RouterFragment_query",
+  "name": "LayoutPageFragment_query",
   "selections": [
     {
       "kind": "ClientExtension",
@@ -51,5 +51,5 @@ const node: ReaderFragment = {
   "type": "Query",
   "abstractKey": null
 };
-(node as any).hash = '7d8f073d6d7db7f946b44fa98da8c621';
+(node as any).hash = '93695768c3732893a77f4f6b10d3caeb';
 export default node;
