@@ -6,19 +6,10 @@ import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
 export type AppQueryVariables = {};
 export type AppQueryResponse = {
-    readonly allIngredients: {
-        readonly edges: ReadonlyArray<{
-            readonly node: {
-                readonly id: string;
-                readonly name: string;
-            } | null;
-        } | null>;
-    } | null;
     readonly allUsers: {
         readonly edges: ReadonlyArray<{
             readonly node: {
                 readonly id: string;
-                readonly username: string;
             } | null;
         } | null>;
     } | null;
@@ -33,19 +24,10 @@ export type AppQuery = {
 
 /*
 query AppQuery {
-  allIngredients {
-    edges {
-      node {
-        id
-        name
-      }
-    }
-  }
   allUsers {
     edges {
       node {
         id
-        username
       }
     }
   }
@@ -54,54 +36,6 @@ query AppQuery {
 
 const node: ConcreteRequest = (function(){
 var v0 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-},
-v1 = {
-  "alias": null,
-  "args": null,
-  "concreteType": "IngredientNodeConnection",
-  "kind": "LinkedField",
-  "name": "allIngredients",
-  "plural": false,
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "concreteType": "IngredientNodeEdge",
-      "kind": "LinkedField",
-      "name": "edges",
-      "plural": true,
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "concreteType": "IngredientNode",
-          "kind": "LinkedField",
-          "name": "node",
-          "plural": false,
-          "selections": [
-            (v0/*: any*/),
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "name",
-              "storageKey": null
-            }
-          ],
-          "storageKey": null
-        }
-      ],
-      "storageKey": null
-    }
-  ],
-  "storageKey": null
-},
-v2 = {
   "alias": null,
   "args": null,
   "concreteType": "UserTypeConnection",
@@ -125,12 +59,11 @@ v2 = {
           "name": "node",
           "plural": false,
           "selections": [
-            (v0/*: any*/),
             {
               "alias": null,
               "args": null,
               "kind": "ScalarField",
-              "name": "username",
+              "name": "id",
               "storageKey": null
             }
           ],
@@ -149,8 +82,7 @@ return {
     "metadata": null,
     "name": "AppQuery",
     "selections": [
-      (v1/*: any*/),
-      (v2/*: any*/),
+      (v0/*: any*/),
       {
         "args": null,
         "kind": "FragmentSpread",
@@ -166,8 +98,7 @@ return {
     "kind": "Operation",
     "name": "AppQuery",
     "selections": [
-      (v1/*: any*/),
-      (v2/*: any*/),
+      (v0/*: any*/),
       {
         "kind": "ClientExtension",
         "selections": [
@@ -194,14 +125,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "9a165171f033bae87befe3cbc93e4f75",
+    "cacheID": "7add7dbe8afe361cf60993e711ab3ff4",
     "id": null,
     "metadata": {},
     "name": "AppQuery",
     "operationKind": "query",
-    "text": "query AppQuery {\n  allIngredients {\n    edges {\n      node {\n        id\n        name\n      }\n    }\n  }\n  allUsers {\n    edges {\n      node {\n        id\n        username\n      }\n    }\n  }\n}\n"
+    "text": "query AppQuery {\n  allUsers {\n    edges {\n      node {\n        id\n      }\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '32b048de909c16f6628de2dba1fc3bd8';
+(node as any).hash = '522e5e50078c2bd73fff9f7ed375f527';
 export default node;

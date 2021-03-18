@@ -142,8 +142,8 @@ GRAPHENE = {
 }
 
 # cors middleware
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    "http://localhost:*",
 ]
 
 # django graphrene jwt

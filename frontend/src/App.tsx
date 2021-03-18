@@ -39,19 +39,10 @@ commitLocalUpdate(environment, (store: RecordSourceProxy) => {
 
 const query = graphql`
   query AppQuery {
-    allIngredients {
-      edges {
-        node {
-          id
-          name
-        }
-      }
-    }
     allUsers {
       edges {
         node {
           id
-          username
         }
       }
     }
@@ -69,18 +60,6 @@ function App() {
     query
   );
 
-  const ingredients = data.allIngredients?.edges.map((ingredient) => {
-    return (
-      <div key={ingredient?.node?.id}>
-        <h1>{ingredient?.node?.name}</h1>
-        <Button variant="contained" color="primary">
-          Hello World
-        </Button>
-      </div>
-    );
-  });
-  console.log(ingredients);
-
   return (
     <LayoutPage clientStore={data}>
       <Button
@@ -91,14 +70,9 @@ function App() {
       >
         click me to go to main manually
       </Button>
-      <Route
-        exact
-        path="/main"
-        render={(props) => <MainPage {...props} queryRef={mainPageQueryRef} />}
-      />
+      <Route exact path="/main" render={(props) => <MainPage {...props} />} />
       <Route exact path="/SignIn" component={SignInPage} />
       <Route exact path="/SignUp" component={SignUpPage} />
-      {ingredients}
     </LayoutPage>
   );
 }

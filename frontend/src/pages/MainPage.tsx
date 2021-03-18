@@ -1,13 +1,59 @@
 import React from "react";
-import type { AppQuery as AppQueryType } from "../__generated__/AppQuery.graphql";
-import AppQuery from "../__generated__/AppQuery.graphql";
+import type { MainPageQuery as MainPageQueryType } from "./__generated__/MainPageQuery.graphql";
 
-import { usePreloadedQuery } from "react-relay";
+import Button from "@material-ui/core/Button";
+
+import graphql from "babel-plugin-relay/macro";
+import {
+  loadQuery,
+  usePreloadedQuery,
+  useQueryLoader,
+  commitLocalUpdate,
+  useLazyLoadQuery,
+} from "react-relay";
+import { useHistory } from "react-router-dom";
+
+const query = graphql`
+  query MainPageQuery {
+    allIngredients {
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+    allUsers {
+      edges {
+        node {
+          id
+          username
+        }
+      }
+    }
+  }
+`;
 
 export default function MainPage(props: any) {
-  console.log("MAIN PAGE", props);
+  const data = useLazyLoadQuery<MainPageQueryType>(query, {});
 
-  const data = usePreloadedQuery<AppQueryType>(AppQuery, props.queryRef);
   console.log(data);
-  return <h1>Main page</h1>;
+  const ingredients = data.allIngredients?.edges.map((ingredient) => {
+    return (
+      <div key={ingredient?.node?.id}>
+        <h1>{ingredient?.node?.name}</h1>
+        <Button variant="contained" color="primary">
+          Hello World
+        </Button>
+      </div>
+    );
+  });
+  console.log(ingredients);
+
+  return (
+    <div>
+      <h1>Main page</h1>
+      {ingredients}
+    </div>
+  );
 }
