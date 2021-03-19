@@ -1,5 +1,9 @@
 import { Environment, Network, RecordSource, Store } from "relay-runtime";
-import { AUTH_TOKEN } from "./constants";
+import { AUTH_TOKEN } from "./utils";
+
+import { v4 as uuidv4 } from "uuid";
+import { RecordSourceProxy } from "relay-runtime";
+import { commitLocalUpdate } from "react-relay";
 
 async function fetchGraphQL(text: any, variables: any) {
   // Fetch data from GitHub's GraphQL API:
@@ -31,6 +35,17 @@ async function fetchRelay(params: { name: any; text: any }, variables: any) {
 const environment = new Environment({
   network: Network.create(fetchRelay),
   store: new Store(new RecordSource()),
+});
+
+// initial local state
+commitLocalUpdate(environment, (store: RecordSourceProxy) => {
+  // console.log(store);
+  // const clientStore = store.getRoot().getLinkedRecord("clientStore");
+  const token = localStorage.getItem(AUTH_TOKEN);
+  const newClientStore = store.create(uuidv4(), "clientStore");
+  newClientStore.setValue(token, "authToken");
+  const root = store.getRoot();
+  root.setLinkedRecord(newClientStore, "clientStore");
 });
 
 export default environment;

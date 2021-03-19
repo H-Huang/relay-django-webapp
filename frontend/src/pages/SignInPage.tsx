@@ -7,13 +7,12 @@ import {
   FormControlLabel,
   Checkbox,
   Grid,
-  Box,
   Typography,
   Container,
 } from "@material-ui/core";
 // import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import graphql from "babel-plugin-relay/macro";
-import { commitMutation, commitLocalUpdate, Environment } from "react-relay";
+import { commitMutation, Environment } from "react-relay";
 
 import environment from "../RelayEnvironment";
 import { Link } from "react-router-dom";
@@ -24,11 +23,9 @@ import type {
   SignInPageMutation,
 } from "./__generated__/SignInPageMutation.graphql";
 
-import { useHistory } from "react-router-dom";
-import { AUTH_TOKEN } from "../constants";
+import { AUTH_TOKEN, history } from "../utils";
 
 import { makeStyles } from "@material-ui/core/styles";
-const { ConnectionHandler } = require("relay-runtime");
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -61,20 +58,10 @@ const mutation = graphql`
   }
 `;
 
-function commitTokenCreateLocally(environment: Environment, userId: string) {
-  return commitLocalUpdate(environment, (store) => {
-    const root = store.getRoot();
-    console.log(root);
-    const user = store.get(userId);
-    console.log(user);
-  });
-}
-
 export function signIn(
   environment: Environment,
   variables: SignInPageMutationVariables
 ) {
-  console.log(variables);
   commitMutation<SignInPageMutation>(environment, {
     mutation,
     variables,
@@ -100,8 +87,6 @@ export function signIn(
 }
 
 export default function SignIn() {
-  const history = useHistory();
-
   const [state, setState] = React.useState<ObtainJSONWebTokenInput>({
     username: "",
     password: "",
@@ -164,16 +149,12 @@ export default function SignIn() {
             onClick={(e) => {
               e.preventDefault();
               signIn(environment, { input: state });
-              // history.push("/main");
-              // commitTokenCreateLocally(environment, "VXNlclR5cGU6MTM=");
+              history.push("/main");
             }}
           >
             Sign In
           </Button>
           <Grid container>
-            <Grid item xs>
-              <p>Forgot password?</p>
-            </Grid>
             <Grid item>
               <Link to="/SignUp">{"Don't have an account? Sign Up"}</Link>
             </Grid>

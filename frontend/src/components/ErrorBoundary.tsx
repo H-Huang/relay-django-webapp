@@ -1,5 +1,4 @@
 import React from "react";
-import { Props } from "relay-runtime";
 
 type State = { hasError: Boolean };
 

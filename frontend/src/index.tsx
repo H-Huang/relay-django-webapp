@@ -5,14 +5,15 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import environment from "./RelayEnvironment";
 import ErrorBoundary from "./components/ErrorBoundary";
+import { history } from "./utils";
 
-import { BrowserRouter } from "react-router-dom";
+import { Router } from "react-router-dom";
 
 const { RelayEnvironmentProvider } = require("react-relay");
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <Router history={history}>
       <RelayEnvironmentProvider environment={environment}>
         <ErrorBoundary>
           <React.Suspense fallback={null}>
@@ -20,7 +21,7 @@ ReactDOM.render(
           </React.Suspense>
         </ErrorBoundary>
       </RelayEnvironmentProvider>
-    </BrowserRouter>
+    </Router>
   </React.StrictMode>,
   document.getElementById("root")
 );

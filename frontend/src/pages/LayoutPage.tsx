@@ -1,10 +1,7 @@
 // LayoutPage.tsx
-import React, { useState } from "react";
-import { BrowserRouter, Route, Link } from "react-router-dom";
-import { RouteComponentProps, withRouter } from "react-router";
+import React from "react";
 
-import { AUTH_TOKEN } from "../constants";
-import { useHistory } from "react-router-dom";
+import { AUTH_TOKEN, history } from "../utils";
 
 import environment from "../RelayEnvironment";
 import graphql from "babel-plugin-relay/macro";
@@ -13,14 +10,10 @@ import { RecordSourceProxy } from "relay-runtime";
 
 import AppBar from "../components/AppBar";
 
-const {
-  loadQuery,
-  usePreloadedQuery,
-  useFragment,
-  commitLocalUpdate,
-} = require("react-relay");
+const { useFragment, commitLocalUpdate } = require("react-relay");
 
-function signOut() {
+function signOut(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+  event.preventDefault();
   commitLocalUpdate(environment, (store: RecordSourceProxy) => {
     console.log(store);
     const clientStore = store.getRoot().getLinkedRecord("clientStore");
@@ -28,6 +21,7 @@ function signOut() {
     clientStore?.setValue(null, "authToken");
     console.log(clientStore);
   });
+  history.push("/main");
 }
 
 const fragment = graphql`

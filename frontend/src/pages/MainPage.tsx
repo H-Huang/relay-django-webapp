@@ -4,14 +4,7 @@ import type { MainPageQuery as MainPageQueryType } from "./__generated__/MainPag
 import Button from "@material-ui/core/Button";
 
 import graphql from "babel-plugin-relay/macro";
-import {
-  loadQuery,
-  usePreloadedQuery,
-  useQueryLoader,
-  commitLocalUpdate,
-  useLazyLoadQuery,
-} from "react-relay";
-import { useHistory } from "react-router-dom";
+import { useLazyLoadQuery } from "react-relay";
 
 const query = graphql`
   query MainPageQuery {

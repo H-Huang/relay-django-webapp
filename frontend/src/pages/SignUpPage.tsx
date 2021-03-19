@@ -6,9 +6,7 @@ import {
   TextField,
   FormControlLabel,
   Checkbox,
-  Link,
   Grid,
-  Box,
   Typography,
   Container,
 } from "@material-ui/core";
@@ -17,7 +15,8 @@ import graphql from "babel-plugin-relay/macro";
 import { commitMutation, Environment } from "react-relay";
 import environment from "../RelayEnvironment";
 import { signIn } from "./SignInPage";
-import { useHistory } from "react-router-dom";
+import { history } from "../utils";
+import { Link } from "react-router-dom";
 
 import {
   CreateUserInput,
@@ -75,8 +74,6 @@ function signUp(
 }
 
 export default function SignUp() {
-  const history = useHistory();
-
   const classes = useStyles();
   const [state, setState] = React.useState<CreateUserInput>({
     email: "",
@@ -112,6 +109,7 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                autoFocus
                 onChange={handleChange}
               />
             </Grid>
@@ -156,9 +154,7 @@ export default function SignUp() {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
-                Already have an account? Sign in
-              </Link>
+              <Link to="/SignIn">Already have an account? Sign in</Link>
             </Grid>
           </Grid>
         </form>
