@@ -13,6 +13,9 @@ const Template: Story<AppBarProps> = (args) => <AppBar {...args} />;
 export const LoggedIn = Template.bind({});
 LoggedIn.args = {
   loggedIn: true,
+  signOutMethod: () => {
+    console.log("sign out");
+  },
 };
 
 export const LoggedOut = Template.bind({});
