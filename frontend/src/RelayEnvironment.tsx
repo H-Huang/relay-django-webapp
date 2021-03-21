@@ -6,13 +6,19 @@ import { RecordSourceProxy } from "relay-runtime";
 import { commitLocalUpdate } from "react-relay";
 
 async function fetchGraphQL(text: any, variables: any) {
+  let headers: any = {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  };
+  // Create user mutation fails with error "Error decoding signature graphql" when
+  // using Authorization header without a JWT
+  const token = localStorage.getItem(AUTH_TOKEN);
+  if (token) {
+    headers.Authorization = `JWT ${token}`;
+  }
   const response = await fetch("http://localhost:8000/graphql", {
     method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: `JWT ${localStorage.getItem(AUTH_TOKEN)}`,
-    },
+    headers,
     body: JSON.stringify({
       query: text,
       variables,

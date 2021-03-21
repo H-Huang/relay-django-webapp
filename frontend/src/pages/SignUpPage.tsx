@@ -68,6 +68,11 @@ function signUp(
       console.log("Response received from server.");
       console.log(response);
       console.log(errors);
+      const loginInfo: ObtainJSONWebTokenInput = {
+        username: variables.input.email,
+        password: variables.input.password,
+      };
+      signIn(environment, { input: loginInfo });
     },
     onError: (err) => console.error(err),
   });
@@ -141,13 +146,8 @@ export default function SignUp() {
             className={classes.submit}
             onClick={(e) => {
               e.preventDefault();
+              console.log(state);
               signUp(environment, { input: state });
-              const loginInfo: ObtainJSONWebTokenInput = {
-                username: state.email,
-                password: state.password,
-              };
-              signIn(environment, { input: loginInfo });
-              history.go(0);
             }}
           >
             Sign Up

@@ -23,7 +23,7 @@ import type {
   SignInPageMutation,
 } from "./__generated__/SignInPageMutation.graphql";
 
-import { AUTH_TOKEN, history } from "../utils";
+import { AUTH_TOKEN, history, redirectAndRefresh } from "../utils";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -72,8 +72,7 @@ export function signIn(
       if (response?.tokenAuth) {
         localStorage.setItem(AUTH_TOKEN, response.tokenAuth.token);
       }
-      history.push("/");
-      history.go(0);
+      redirectAndRefresh("/");
     },
     onError: (err) => console.error(err),
     updater: (store) => {

@@ -1,7 +1,7 @@
 // LayoutPage.tsx
 import React from "react";
 
-import { AUTH_TOKEN, history } from "../utils";
+import { AUTH_TOKEN, history, redirectAndRefresh } from "../utils";
 
 import environment from "../RelayEnvironment";
 import { RecordSourceProxy } from "relay-runtime";
@@ -21,7 +21,7 @@ function signOut(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     clientStore?.setValue(null, "authToken");
     console.log(clientStore);
   });
-  history.go(0);
+  redirectAndRefresh("/");
 }
 
 type Props = {
