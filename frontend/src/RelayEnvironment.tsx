@@ -6,13 +6,12 @@ import { RecordSourceProxy } from "relay-runtime";
 import { commitLocalUpdate } from "react-relay";
 
 async function fetchGraphQL(text: any, variables: any) {
-  // Fetch data from GitHub's GraphQL API:
   const response = await fetch("http://localhost:8000/graphql", {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `bearer ${localStorage.getItem(AUTH_TOKEN)}`,
+      Authorization: `JWT ${localStorage.getItem(AUTH_TOKEN)}`,
     },
     body: JSON.stringify({
       query: text,
@@ -39,13 +38,14 @@ const environment = new Environment({
 
 // initial local state
 commitLocalUpdate(environment, (store: RecordSourceProxy) => {
-  // console.log(store);
+  console.log(store);
   // const clientStore = store.getRoot().getLinkedRecord("clientStore");
   const token = localStorage.getItem(AUTH_TOKEN);
   const newClientStore = store.create(uuidv4(), "clientStore");
   newClientStore.setValue(token, "authToken");
-  const root = store.getRoot();
-  root.setLinkedRecord(newClientStore, "clientStore");
+  const userInfo = store.getRoot().getLinkedRecord("whoami");
+  console.log(userInfo);
+  userInfo?.setLinkedRecord(newClientStore, "clientStore");
 });
 
 export default environment;

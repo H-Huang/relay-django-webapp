@@ -8,7 +8,7 @@ import {
   Typography,
   Button,
 } from "@material-ui/core/";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

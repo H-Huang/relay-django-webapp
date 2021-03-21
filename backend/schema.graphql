@@ -51,23 +51,11 @@ type IngredientNodeEdge {
   cursor: String!
 }
 
-input IntroduceShipInput {
-  shipName: String!
-  factionId: String!
-  clientMutationId: String
-}
-
-type IntroduceShipPayload {
-  ship: Ship
-  clientMutationId: String
-}
-
 type Mutation {
   createUser(input: CreateUserInput!): CreateUserPayload
   tokenAuth(input: ObtainJSONWebTokenInput!): ObtainJSONWebTokenPayload
   verifyToken(input: VerifyInput!): VerifyPayload
   refreshToken(input: RefreshInput!): RefreshPayload
-  createShip(input: IntroduceShipInput!): IntroduceShipPayload
 }
 
 interface Node {
@@ -98,6 +86,7 @@ type Query {
   hello: String
   category(id: ID!): CategoryNode
   allCategories(before: String, after: String, first: Int, last: Int, name: String, ingredients: [ID]): CategoryNodeConnection
+  whoami: UserType
   ingredient(id: ID!): IngredientNode
   allIngredients(before: String, after: String, first: Int, last: Int, name: String, name_Icontains: String, name_Istartswith: String, notes: String, notes_Icontains: String, category: ID, category_Name: String): IngredientNodeConnection
   allUsers(before: String, after: String, first: Int, last: Int, username: String): UserTypeConnection
@@ -113,11 +102,6 @@ type RefreshPayload {
   refreshExpiresIn: Int!
   clientMutationId: String
   token: String!
-}
-
-type Ship implements Node {
-  id: ID!
-  name: String
 }
 
 type UserType implements Node {

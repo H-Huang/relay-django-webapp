@@ -4,13 +4,13 @@ import React from "react";
 import { AUTH_TOKEN, history } from "../utils";
 
 import environment from "../RelayEnvironment";
-import graphql from "babel-plugin-relay/macro";
-import type { LayoutPageFragment_query$key } from "./__generated__/LayoutPageFragment_query.graphql";
 import { RecordSourceProxy } from "relay-runtime";
 
 import AppBar from "../components/AppBar";
+import graphql from "babel-plugin-relay/macro";
+import { useLazyLoadQuery, useFragment } from "react-relay";
 
-const { useFragment, commitLocalUpdate } = require("react-relay");
+const { commitLocalUpdate } = require("react-relay");
 
 function signOut(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
   event.preventDefault();
@@ -21,28 +21,20 @@ function signOut(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     clientStore?.setValue(null, "authToken");
     console.log(clientStore);
   });
-  history.push("/main");
+  history.go(0);
 }
 
-const fragment = graphql`
-  fragment LayoutPageFragment_query on Query {
-    clientStore {
-      authToken
-    }
-  }
-`;
-
 type Props = {
-  clientStore: LayoutPageFragment_query$key;
+  data: any;
   children?: React.ReactNode;
 };
 
 const LayoutPage = (props: Props) => {
-  const data = useFragment(fragment, props.clientStore);
+  console.log(props);
   return (
     <React.Fragment>
       <AppBar
-        loggedIn={data.clientStore.authToken !== null}
+        loggedIn={props?.data?.whoami?.id !== undefined}
         signOutMethod={signOut}
       />
       <div className="navigationWrapper">

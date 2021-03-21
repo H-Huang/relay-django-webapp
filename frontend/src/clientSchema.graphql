@@ -3,6 +3,7 @@ type ClientStore {
   authToken: String
 }
 
-extend type Query {
-  clientStore: ClientStore
-}
+# extend type UserType {
+#  clientStore: ClientStore
+#  test: String
+# }

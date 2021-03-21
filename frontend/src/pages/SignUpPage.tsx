@@ -147,7 +147,7 @@ export default function SignUp() {
                 password: state.password,
               };
               signIn(environment, { input: loginInfo });
-              history.push("/main");
+              history.go(0);
             }}
           >
             Sign Up

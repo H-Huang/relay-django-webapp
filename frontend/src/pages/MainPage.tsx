@@ -1,52 +1,60 @@
 import React from "react";
-import type { MainPageQuery as MainPageQueryType } from "./__generated__/MainPageQuery.graphql";
+import type { MainPageFragment_query$key } from "./__generated__/MainPageFragment_query.graphql";
 
 import Button from "@material-ui/core/Button";
 
 import graphql from "babel-plugin-relay/macro";
-import { useLazyLoadQuery } from "react-relay";
+import { useLazyLoadQuery, useFragment } from "react-relay";
 
-const query = graphql`
-  query MainPageQuery {
-    allIngredients {
-      edges {
-        node {
-          id
-          name
-        }
-      }
-    }
-    allUsers {
-      edges {
-        node {
-          id
-          username
-        }
-      }
+const fragment = graphql`
+  fragment MainPageFragment_query on Query {
+    whoami {
+      id
+      username
+      email
+      dateJoined
     }
   }
 `;
 
-export default function MainPage(props: any) {
-  const data = useLazyLoadQuery<MainPageQueryType>(query, {});
+type Props = {
+  data?: any;
+};
 
-  console.log(data);
-  const ingredients = data.allIngredients?.edges.map((ingredient) => {
-    return (
-      <div key={ingredient?.node?.id}>
-        <h1>{ingredient?.node?.name}</h1>
-        <Button variant="contained" color="primary">
-          Hello World
-        </Button>
-      </div>
-    );
-  });
-  console.log(ingredients);
+export default function MainPage(props: Props) {
+  //   console.log(data);
+  //   const ingredients = data.allIngredients?.edges.map((ingredient) => {
+  //     return (
+  //       <div key={ingredient?.node?.id}>
+  //         <h1>{ingredient?.node?.name}</h1>
+  //         <Button variant="contained" color="primary">
+  //           Hello World
+  //         </Button>
+  //       </div>
+  //     );
+  //   });
+  //   console.log(ingredients);
+  const data = props?.data?.whoami;
+
+  let userInfo = null;
+  if (data) {
+    userInfo = [];
+    for (const key in data) {
+      userInfo.push(
+        <p key={key}>
+          {key} : {data[key]}
+        </p>
+      );
+    }
+  }
 
   return (
     <div>
-      <h1>Main page</h1>
-      {ingredients}
+      {userInfo ? (
+        <h1>User info: {userInfo}</h1>
+      ) : (
+        <h1>Sign up or sign in to see user info</h1>
+      )}
     </div>
   );
 }

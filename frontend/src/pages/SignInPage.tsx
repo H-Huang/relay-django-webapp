@@ -72,16 +72,17 @@ export function signIn(
       if (response?.tokenAuth) {
         localStorage.setItem(AUTH_TOKEN, response.tokenAuth.token);
       }
+      history.push("/");
+      history.go(0);
     },
     onError: (err) => console.error(err),
     updater: (store) => {
-      const token = store.getRootField("tokenAuth").getValue("token");
-
-      const newClientStore = store.create(token, "clientStore");
-      newClientStore.setValue(token, "authToken");
-      console.log(newClientStore);
-      const root = store.getRoot();
-      root.setLinkedRecord(newClientStore, "clientStore");
+      // const token = store.getRootField("tokenAuth").getValue("token");
+      // const newClientStore = store.create(token, "clientStore");
+      // newClientStore.setValue(token, "authToken");
+      // console.log(newClientStore);
+      // const userInfo = store.getRoot().getLinkedRecord("whoami");
+      // userInfo?.setLinkedRecord(newClientStore, "clientStore");
     },
   });
 }
@@ -149,7 +150,6 @@ export default function SignIn() {
             onClick={(e) => {
               e.preventDefault();
               signIn(environment, { input: state });
-              history.push("/main");
             }}
           >
             Sign In

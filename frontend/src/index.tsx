@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import environment from "./RelayEnvironment";
@@ -9,19 +8,25 @@ import { history } from "./utils";
 
 import { Router } from "react-router-dom";
 
-const { RelayEnvironmentProvider } = require("react-relay");
+import { RelayEnvironmentProvider } from "react-relay";
+import { ThemeProvider } from "@material-ui/core/styles";
+import theme from "./MuiTheme";
+import CssBaseline from "@material-ui/core/CssBaseline";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Router history={history}>
-      <RelayEnvironmentProvider environment={environment}>
-        <ErrorBoundary>
-          <React.Suspense fallback={null}>
-            <App />
-          </React.Suspense>
-        </ErrorBoundary>
-      </RelayEnvironmentProvider>
-    </Router>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router history={history}>
+        <RelayEnvironmentProvider environment={environment}>
+          <ErrorBoundary>
+            <React.Suspense fallback={null}>
+              <App />
+            </React.Suspense>
+          </ErrorBoundary>
+        </RelayEnvironmentProvider>
+      </Router>
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

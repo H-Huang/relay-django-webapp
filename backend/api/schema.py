@@ -47,10 +47,19 @@ class Query(graphene.ObjectType):
     hello = graphene.String()
     category = relay.Node.Field(CategoryNode)
     all_categories = DjangoFilterConnectionField(CategoryNode)
+    whoami = graphene.Field(UserType)
 
     ingredient = relay.Node.Field(IngredientNode)
     all_ingredients = DjangoFilterConnectionField(IngredientNode)
     all_users = DjangoFilterConnectionField(UserType)
+
+    @login_required
+    def resolve_whoami(self, info, **kwargs):
+        user = info.context.user
+        print(user)
+        if not user.is_authenticated:
+            raise Exception('Authentication credentials were not provided')
+        return user
 
 
 class GetUser(relay.ClientIDMutation):
