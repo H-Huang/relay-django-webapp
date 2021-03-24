@@ -24,6 +24,8 @@ import type {
 } from "./__generated__/SignInPageMutation.graphql";
 
 import { AUTH_TOKEN, history, redirectAndRefresh } from "../utils";
+import { useFormik } from "formik";
+import * as yup from "yup";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -86,22 +88,29 @@ export function signIn(
   });
 }
 
-export default function SignIn() {
-  const [state, setState] = React.useState<ObtainJSONWebTokenInput>({
-    username: "",
-    password: "",
-  });
-  const classes = useStyles();
+const validationSchema = yup.object({
+  username: yup
+    .string()
+    .email("Enter a valid email")
+    .required("Email is required")
+    .uppercase(),
+  password: yup.string().required("Password is required").uppercase(),
+});
 
-  const handleChange = (
-    evt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const value = evt.target.value;
-    setState({
-      ...state,
-      [evt.target.name]: value,
-    });
-  };
+export default function SignIn() {
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      password: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      console.log(values);
+      signIn(environment, { input: values });
+    },
+  });
+
+  const classes = useStyles();
 
   return (
     <Container component="main" maxWidth="xs">
@@ -111,7 +120,7 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={formik.handleSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -122,7 +131,10 @@ export default function SignIn() {
             name="username"
             autoComplete="email"
             autoFocus
-            onChange={handleChange}
+            value={formik.values.username}
+            onChange={formik.handleChange}
+            error={formik.touched.username && Boolean(formik.errors.username)}
+            helperText={formik.touched.username && formik.errors.username}
           />
           <TextField
             variant="outlined"
@@ -134,7 +146,10 @@ export default function SignIn() {
             type="password"
             id="password"
             autoComplete="current-password"
-            onChange={handleChange}
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
@@ -146,10 +161,6 @@ export default function SignIn() {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={(e) => {
-              e.preventDefault();
-              signIn(environment, { input: state });
-            }}
           >
             Sign In
           </Button>

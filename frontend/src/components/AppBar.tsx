@@ -15,6 +15,9 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       flexGrow: 1,
     },
+    appBar: {
+      padding: "0 20%",
+    },
     menuButton: {
       marginRight: theme.spacing(2),
       color: "black",
@@ -23,7 +26,11 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
     },
     isActive: {
-      color: "red",
+      color: "red !important",
+    },
+    navLink: {
+      color: "white",
+      textDecoration: "none",
     },
   })
 );
@@ -40,25 +47,42 @@ export default function ButtonAppBar(props: AppBarProps) {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar className={classes.appBar} position="static">
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
-            <NavLink exact to="/" activeClassName={classes.isActive}>
+            <NavLink
+              exact
+              to="/"
+              activeClassName={classes.isActive}
+              className={classes.navLink}
+            >
               Home
             </NavLink>
           </Typography>
           {props.loggedIn ? (
-            <NavLink to="/SignOut" activeClassName={classes.isActive}>
+            <NavLink
+              to="/SignOut"
+              activeClassName={classes.isActive}
+              className={classes.navLink}
+            >
               <Button color="inherit" onClick={props.signOutMethod}>
                 Sign out
               </Button>
             </NavLink>
           ) : (
             <>
-              <NavLink to="/SignIn" activeClassName={classes.isActive}>
+              <NavLink
+                to="/SignIn"
+                activeClassName={classes.isActive}
+                className={classes.navLink}
+              >
                 <Button color="inherit">Sign in</Button>
               </NavLink>
-              <NavLink to="/SignUp" activeClassName={classes.isActive}>
+              <NavLink
+                to="/SignUp"
+                activeClassName={classes.isActive}
+                className={classes.navLink}
+              >
                 <Button color="inherit">Sign up</Button>
               </NavLink>
             </>

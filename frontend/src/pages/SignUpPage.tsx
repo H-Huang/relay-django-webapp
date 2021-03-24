@@ -17,6 +17,8 @@ import environment from "../RelayEnvironment";
 import { signIn } from "./SignInPage";
 import { history } from "../utils";
 import { Link } from "react-router-dom";
+import { useFormik } from "formik";
+import * as yup from "yup";
 
 import {
   CreateUserInput,
@@ -78,22 +80,34 @@ function signUp(
   });
 }
 
+const validationSchema = yup.object({
+  email: yup
+    .string()
+    .email("Enter a valid email")
+    .required("Email is required")
+    .uppercase(),
+  password: yup
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .max(26, "Password cannot be more than 26 characters")
+    .required("Password is required")
+    .uppercase(),
+});
+
 export default function SignUp() {
-  const classes = useStyles();
-  const [state, setState] = React.useState<CreateUserInput>({
-    email: "",
-    password: "",
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      console.log(values);
+      signUp(environment, { input: values });
+    },
   });
 
-  const handleChange = (
-    evt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const value = evt.target.value;
-    setState({
-      ...state,
-      [evt.target.name]: value,
-    });
-  };
+  const classes = useStyles();
 
   return (
     <Container component="main" maxWidth="xs">
@@ -103,7 +117,7 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -115,7 +129,10 @@ export default function SignUp() {
                 name="email"
                 autoComplete="email"
                 autoFocus
-                onChange={handleChange}
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                error={formik.touched.email && Boolean(formik.errors.email)}
+                helperText={formik.touched.email && formik.errors.email}
               />
             </Grid>
             <Grid item xs={12}>
@@ -128,7 +145,12 @@ export default function SignUp() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
-                onChange={handleChange}
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.password && Boolean(formik.errors.password)
+                }
+                helperText={formik.touched.password && formik.errors.password}
               />
             </Grid>
             <Grid item xs={12}>
@@ -144,11 +166,6 @@ export default function SignUp() {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={(e) => {
-              e.preventDefault();
-              console.log(state);
-              signUp(environment, { input: state });
-            }}
           >
             Sign Up
           </Button>

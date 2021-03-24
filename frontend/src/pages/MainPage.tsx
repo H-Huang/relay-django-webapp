@@ -1,4 +1,7 @@
 import React from "react";
+
+import { createStyles, makeStyles, Theme } from "@material-ui/core/";
+
 import type { MainPageFragment_query$key } from "./__generated__/MainPageFragment_query.graphql";
 
 import Button from "@material-ui/core/Button";
@@ -17,11 +20,20 @@ const fragment = graphql`
   }
 `;
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      textAlign: "center",
+    },
+  })
+);
+
 type Props = {
   data?: any;
 };
 
 export default function MainPage(props: Props) {
+  const classes = useStyles();
   //   console.log(data);
   //   const ingredients = data.allIngredients?.edges.map((ingredient) => {
   //     return (
@@ -49,7 +61,7 @@ export default function MainPage(props: Props) {
   }
 
   return (
-    <div>
+    <div className={classes.root}>
       {userInfo ? (
         <h1>User info: {userInfo}</h1>
       ) : (

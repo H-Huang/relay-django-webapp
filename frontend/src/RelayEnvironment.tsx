@@ -43,15 +43,15 @@ const environment = new Environment({
 });
 
 // initial local state
-commitLocalUpdate(environment, (store: RecordSourceProxy) => {
-  console.log(store);
-  // const clientStore = store.getRoot().getLinkedRecord("clientStore");
-  const token = localStorage.getItem(AUTH_TOKEN);
-  const newClientStore = store.create(uuidv4(), "clientStore");
-  newClientStore.setValue(token, "authToken");
-  const userInfo = store.getRoot().getLinkedRecord("whoami");
-  console.log(userInfo);
-  userInfo?.setLinkedRecord(newClientStore, "clientStore");
-});
+// commitLocalUpdate(environment, (store: RecordSourceProxy) => {
+//   console.log(store);
+//   // const clientStore = store.getRoot().getLinkedRecord("clientStore");
+//   const token = localStorage.getItem(AUTH_TOKEN);
+//   const newClientStore = store.create(uuidv4(), "clientStore");
+//   newClientStore.setValue(token, "authToken");
+//   const userInfo = store.getRoot().getLinkedRecord("whoami");
+//   console.log(userInfo);
+//   userInfo?.setLinkedRecord(newClientStore, "clientStore");
+// });
 
 export default environment;
