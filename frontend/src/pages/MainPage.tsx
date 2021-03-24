@@ -1,6 +1,6 @@
 import React from "react";
 
-import { createStyles, makeStyles, Theme } from "@material-ui/core/";
+import { makeStyles } from "@material-ui/core/";
 
 import type { MainPageFragment_query$key } from "./__generated__/MainPageFragment_query.graphql";
 
@@ -20,13 +20,11 @@ const fragment = graphql`
   }
 `;
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      textAlign: "center",
-    },
-  })
-);
+const useStyles = makeStyles((theme) => ({
+  root: {
+    textAlign: "center",
+  },
+}));
 
 type Props = {
   data?: any;

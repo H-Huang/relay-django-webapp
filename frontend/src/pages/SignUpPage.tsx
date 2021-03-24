@@ -25,6 +25,7 @@ import {
   SignUpPageMutationVariables,
 } from "./__generated__/SignUpPageMutation.graphql";
 import type { ObtainJSONWebTokenInput } from "./__generated__/SignInPageMutation.graphql";
+import { useSnackbar, withSnackbar } from "notistack";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -60,7 +61,8 @@ const mutation = graphql`
 
 function signUp(
   environment: Environment,
-  variables: SignUpPageMutationVariables
+  variables: SignUpPageMutationVariables,
+  enqueueSnackbar?: any
 ) {
   console.log(variables);
   commitMutation(environment, {
@@ -70,11 +72,17 @@ function signUp(
       console.log("Response received from server.");
       console.log(response);
       console.log(errors);
-      const loginInfo: ObtainJSONWebTokenInput = {
-        username: variables.input.email,
-        password: variables.input.password,
-      };
-      signIn(environment, { input: loginInfo });
+      if (errors && enqueueSnackbar) {
+        for (let error of errors) {
+          enqueueSnackbar(error.message, { variant: "error" });
+        }
+      } else {
+        const loginInfo: ObtainJSONWebTokenInput = {
+          username: variables.input.email,
+          password: variables.input.password,
+        };
+        signIn(environment, { input: loginInfo });
+      }
     },
     onError: (err) => console.error(err),
   });
@@ -94,7 +102,8 @@ const validationSchema = yup.object({
     .uppercase(),
 });
 
-export default function SignUp() {
+function SignUp() {
+  const { enqueueSnackbar } = useSnackbar();
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -103,7 +112,7 @@ export default function SignUp() {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       console.log(values);
-      signUp(environment, { input: values });
+      signUp(environment, { input: values }, enqueueSnackbar);
     },
   });
 
@@ -179,3 +188,5 @@ export default function SignUp() {
     </Container>
   );
 }
+
+export default withSnackbar(SignUp);

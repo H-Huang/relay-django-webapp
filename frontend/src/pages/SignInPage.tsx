@@ -26,8 +26,10 @@ import type {
 import { AUTH_TOKEN, history, redirectAndRefresh } from "../utils";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { withSnackbar } from "notistack";
 
 import { makeStyles } from "@material-ui/core/styles";
+import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -62,19 +64,26 @@ const mutation = graphql`
 
 export function signIn(
   environment: Environment,
-  variables: SignInPageMutationVariables
+  variables: SignInPageMutationVariables,
+  enqueueSnackbar?: any
 ) {
   commitMutation<SignInPageMutation>(environment, {
     mutation,
     variables,
     onCompleted: (response, errors) => {
-      // console.log("Response received from server.");
-      // console.log(response);
-      // console.log(errors);
-      if (response?.tokenAuth) {
-        localStorage.setItem(AUTH_TOKEN, response.tokenAuth.token);
+      console.log("Response received from server.");
+      console.log(response);
+      console.log(errors);
+      if (errors && enqueueSnackbar) {
+        for (let error of errors) {
+          enqueueSnackbar(error.message, { variant: "error" });
+        }
+      } else {
+        if (response?.tokenAuth) {
+          localStorage.setItem(AUTH_TOKEN, response.tokenAuth.token);
+        }
+        redirectAndRefresh("/");
       }
-      redirectAndRefresh("/");
     },
     onError: (err) => console.error(err),
     updater: (store) => {
@@ -97,7 +106,8 @@ const validationSchema = yup.object({
   password: yup.string().required("Password is required").uppercase(),
 });
 
-export default function SignIn() {
+function SignIn() {
+  const { enqueueSnackbar } = useSnackbar();
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -106,7 +116,7 @@ export default function SignIn() {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       console.log(values);
-      signIn(environment, { input: values });
+      signIn(environment, { input: values }, enqueueSnackbar);
     },
   });
 
@@ -174,3 +184,5 @@ export default function SignIn() {
     </Container>
   );
 }
+
+export default withSnackbar(SignIn);

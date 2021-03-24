@@ -12,20 +12,23 @@ import { RelayEnvironmentProvider } from "react-relay";
 import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "./MuiTheme";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import { SnackbarProvider } from "notistack";
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router history={history}>
-        <RelayEnvironmentProvider environment={environment}>
-          <ErrorBoundary>
-            <React.Suspense fallback={null}>
-              <App />
-            </React.Suspense>
-          </ErrorBoundary>
-        </RelayEnvironmentProvider>
-      </Router>
+      <SnackbarProvider maxSnack={3}>
+        <Router history={history}>
+          <RelayEnvironmentProvider environment={environment}>
+            <ErrorBoundary>
+              <React.Suspense fallback={null}>
+                <App />
+              </React.Suspense>
+            </ErrorBoundary>
+          </RelayEnvironmentProvider>
+        </Router>
+      </SnackbarProvider>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")

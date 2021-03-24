@@ -1,4 +1,5 @@
-import { createMuiTheme } from "@material-ui/core/styles";
+// https://stackoverflow.com/questions/61220424/material-ui-drawer-finddomnode-is-deprecated-in-strictmode
+import { unstable_createMuiStrictModeTheme as createMuiTheme } from "@material-ui/core/styles";
 
 export default createMuiTheme({
   overrides: {
