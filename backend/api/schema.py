@@ -20,38 +20,12 @@ class UserType(DjangoObjectType):
         interfaces = (relay.Node, )
 
 
-class CategoryNode(DjangoObjectType):
-    class Meta:
-        model = Category
-        filter_fields = ['name', 'ingredients']
-        interfaces = (relay.Node, )
-
-
-class IngredientNode(DjangoObjectType):
-    class Meta:
-        model = Ingredient
-        # Allow for some more advanced filtering here
-        filter_fields = {
-            'name': ['exact', 'icontains', 'istartswith'],
-            'notes': ['exact', 'icontains'],
-            'category': ['exact'],
-            'category__name': ['exact'],
-        }
-        interfaces = (relay.Node, )
-
-
 class Query(graphene.ObjectType):
     '''
     Documentation for base query
     '''
     hello = graphene.String()
-    category = relay.Node.Field(CategoryNode)
-    all_categories = DjangoFilterConnectionField(CategoryNode)
     whoami = graphene.Field(UserType)
-
-    ingredient = relay.Node.Field(IngredientNode)
-    all_ingredients = DjangoFilterConnectionField(IngredientNode)
-    all_users = DjangoFilterConnectionField(UserType)
 
     @login_required
     def resolve_whoami(self, info, **kwargs):
@@ -100,7 +74,6 @@ class CreateUser(relay.ClientIDMutation):
 class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
     token_auth = graphql_jwt.relay.ObtainJSONWebToken.Field()
-    # sign_in = SignIn.Field()
     verify_token = graphql_jwt.relay.Verify.Field()
     refresh_token = graphql_jwt.relay.Refresh.Field()
 
